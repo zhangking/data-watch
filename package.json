@@ -1,0 +1,39 @@
+{
+  "name": "dataproxy",
+  "version": "1.0.0",
+  "description": "data proxy",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "lint": "eslint src build",
+    "flow": "flow check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhangking/dataproxy.git"
+  },
+  "keywords": [
+    "data",
+    "proxy",
+    "es6"
+  ],
+  "author": "zhangking",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zhangking/dataproxy/issues"
+  },
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.3.2",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-flow": "^6.23.0",
+    "eslint": "^3.17.0",
+    "eslint-config-standard": "^7.0.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^2.1.1",
+    "flow-bin": "^0.39.0",
+    "webpack": "^2.2.1"
+  },
+  "homepage": "https://github.com/zhangking/dataproxy#readme"
+}
