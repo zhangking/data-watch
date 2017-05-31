@@ -7,11 +7,10 @@ var data = {
 }
 
 var newData = watch(data,{
-    sync: true,
+    sync: false,
     deep: true,
     immediate: false,
-    callback: (newVal,oldVal)=>{console.log(newVal,oldVal)}
+    callback: (value)=>{console.log(value)}
 });
 
 newData.age.number = 2;
-
