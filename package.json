@@ -1,8 +1,8 @@
 {
-  "name": "dataproxy",
-  "version": "1.0.0",
-  "description": "data proxy",
-  "main": "index.js",
+  "name": "data-watch",
+  "version": "1.0.1",
+  "description": "data proxy watch",
+  "main": "/dist/index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "lint": "eslint src build",
@@ -12,10 +12,16 @@
     "type": "git",
     "url": "git+https://github.com/zhangking/dataproxy.git"
   },
+   "files": [
+    "README.md",
+    "dist",
+    "lib"
+  ],
   "keywords": [
     "data",
     "proxy",
-    "es6"
+    "es6",
+    "watch"
   ],
   "author": "zhangking",
   "license": "MIT",

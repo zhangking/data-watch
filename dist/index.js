@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -63,7 +73,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,65 +81,17 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = watch;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__watcher__ = __webpack_require__(4);
-
-
-function watch(target, config) {
-  return new __WEBPACK_IMPORTED_MODULE_0__watcher__["a" /* default */](target, config)['value'];
-}
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return noop; });
+var noop = function noop() {};
 
 /***/ }),
 /* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_watch__ = __webpack_require__(0);
-
-
-var data = {
-    age: {
-        number: 1
-    }
-};
-
-var newData = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lib_watch__["a" /* default */])(data, {
-    sync: false,
-    deep: true,
-    immediate: false,
-    callback: function callback(value) {
-        console.log(value);
-    }
-});
-
-newData.age.number = 2;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return noop; });
-var noop = function noop() {};
-
-/***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony default export */ __webpack_exports__["a"] = (function (value) {
-    return Array.isArray(value) || Object.prototype.toString.call(value) === '[object Object]' && Object.isExtensible(value);
-});
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shouldWatch__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__queue__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shouldWatch__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__queue__ = __webpack_require__(3);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -139,6 +101,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 var uid = 0;
+var lengthF = false;
 
 var Watcher = function () {
   function Watcher(target, config) {
@@ -162,8 +125,6 @@ var Watcher = function () {
     key: 'cancel',
     value: function cancel() {
       this.canceled = true;
-      // cancel __dataproxy__
-      // to do 
     }
   }, {
     key: '_run',
@@ -177,6 +138,7 @@ var Watcher = function () {
   }, {
     key: 'run',
     value: function run() {
+      if (this.canceled) return;
       if (this._config.sync) {
         this._run();
       } else {
@@ -187,6 +149,7 @@ var Watcher = function () {
   }, {
     key: 'dataProxy',
     value: function dataProxy(target, init) {
+      var self = this;
       var proxy = new Proxy(target, this.getHandler(init || this._config.deep));
       Object.defineProperty(target, '__dataproxy__', {
         value: proxy,
@@ -194,6 +157,12 @@ var Watcher = function () {
         writable: false,
         configurable: true
       });
+      init ? Object.defineProperty(target, '__watcher__', {
+        value: self,
+        enumerable: false,
+        writable: false,
+        configurable: true
+      }) : null;
       return proxy;
     }
   }, {
@@ -220,7 +189,13 @@ var Watcher = function () {
             value = self.dataProxy(value);
           }
           Reflect.set(target, key, value, receiver);
-          self.run();
+          if (Array.isArray(target) && self._config.sync) {
+            lengthF ? null : self.run();
+            lengthF = key !== 'length';
+          } else {
+            self.run();
+          }
+
           return true;
         },
         deleteProperty: function deleteProperty(target, propKey) {
@@ -238,100 +213,7 @@ var Watcher = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Watcher);
 
 /***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = queueWatcher;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__nextTick__ = __webpack_require__(7);
-
-
-
-var queue = [];
-var has = {};
-var waiting = false;
-var flushing = false;
-var index = 0;
-
-/**
- * Reset the scheduler's state.
- */
-function resetSchedulerState() {
-  queue.length = 0;
-  has = {};
-  waiting = flushing = false;
-}
-
-/**
- * Flush both queues and run the watchers.
- */
-function flushSchedulerQueue() {
-  flushing = true;
-  var watcher = void 0,
-      id = void 0,
-      vm = void 0;
-
-  // Sort queue before flush.
-  // This ensures that:
-  // 1. Components are updated from parent to child. (because parent is always
-  //    created before the child)
-  // 2. A component's user watchers are run before its render watcher (because
-  //    user watchers are created before the render watcher)
-  // 3. If a component is destroyed during a parent component's watcher run,
-  //    its watchers can be skipped.
-  queue.sort(function (a, b) {
-    return a.id - b.id;
-  });
-
-  // do not cache length because more watchers might be pushed
-  // as we run existing watchers
-  for (index = 0; index < queue.length; index++) {
-    watcher = queue[index];
-    id = watcher.id;
-    has[id] = null;
-    watcher._run();
-  }
-
-  // call updated hooks
-  index = queue.length;
-  while (index--) {
-    watcher = queue[index];
-    vm = watcher.vm;
-  }
-  resetSchedulerState();
-}
-
-/**
- * Push a watcher into the watcher queue.
- * Jobs with duplicate IDs will be skipped unless it's
- * pushed when the queue is being flushed.
- */
-function queueWatcher(watcher) {
-  var id = watcher.id;
-  if (has[id] == null) {
-    has[id] = true;
-    if (!flushing) {
-      queue.push(watcher);
-    } else {
-      // if already flushing, splice the watcher based on its id
-      // if already past its id, it will be run next immediately.
-      var i = queue.length - 1;
-      while (i >= 0 && queue[i].id > watcher.id) {
-        i--;
-      }
-      queue.splice(Math.max(i, index) + 1, 0, watcher);
-    }
-    // queue the flush
-    if (!waiting) {
-      waiting = true;
-      __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__nextTick__["a" /* nextTick */])(flushSchedulerQueue);
-    }
-  }
-}
-
-/***/ }),
-/* 6 */,
-/* 7 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -343,11 +225,7 @@ function queueWatcher(watcher) {
 /* unused harmony export isAndroid */
 /* unused harmony export isIOS */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return nextTick; });
-/* unused harmony export _Set */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(2);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(0);
 
 /* globals MutationObserver */
 
@@ -445,42 +323,127 @@ var nextTick = function () {
   };
 }();
 
-var _Set = void 0;
-/* istanbul ignore if */
-if (typeof Set !== 'undefined' && isNative(Set)) {
-  // use native Set when available.
-  _Set = Set;
-} else {
-  // a non-standard Set polyfill that only works with primitive keys.
-  _Set = function () {
-    function Set() {
-      _classCallCheck(this, Set);
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-      this.set = Object.create(null);
-    }
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = queueWatcher;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__nextTick__ = __webpack_require__(2);
 
-    _createClass(Set, [{
-      key: 'has',
-      value: function has(key) {
-        return this.set[key] === true;
-      }
-    }, {
-      key: 'add',
-      value: function add(key) {
-        this.set[key] = true;
-      }
-    }, {
-      key: 'clear',
-      value: function clear() {
-        this.set = Object.create(null);
-      }
-    }]);
 
-    return Set;
-  }();
+
+var queue = [];
+var has = {};
+var waiting = false;
+var flushing = false;
+var index = 0;
+
+/**
+ * Reset the scheduler's state.
+ */
+function resetSchedulerState() {
+  queue.length = 0;
+  has = {};
+  waiting = flushing = false;
 }
 
+/**
+ * Flush both queues and run the watchers.
+ */
+function flushSchedulerQueue() {
+  flushing = true;
+  var watcher = void 0,
+      id = void 0,
+      vm = void 0;
 
+  // Sort queue before flush.
+  // This ensures that:
+  // 1. Components are updated from parent to child. (because parent is always
+  //    created before the child)
+  // 2. A component's user watchers are run before its render watcher (because
+  //    user watchers are created before the render watcher)
+  // 3. If a component is destroyed during a parent component's watcher run,
+  //    its watchers can be skipped.
+  queue.sort(function (a, b) {
+    return a.id - b.id;
+  });
+
+  // do not cache length because more watchers might be pushed
+  // as we run existing watchers
+  for (index = 0; index < queue.length; index++) {
+    watcher = queue[index];
+    id = watcher.id;
+    has[id] = null;
+    watcher._run();
+  }
+
+  // call updated hooks
+  index = queue.length;
+  while (index--) {
+    watcher = queue[index];
+    vm = watcher.vm;
+  }
+  resetSchedulerState();
+}
+
+/**
+ * Push a watcher into the watcher queue.
+ * Jobs with duplicate IDs will be skipped unless it's
+ * pushed when the queue is being flushed.
+ */
+function queueWatcher(watcher) {
+  var id = watcher.id;
+  if (has[id] == null) {
+    has[id] = true;
+    if (!flushing) {
+      queue.push(watcher);
+    } else {
+      // if already flushing, splice the watcher based on its id
+      // if already past its id, it will be run next immediately.
+      var i = queue.length - 1;
+      while (i >= 0 && queue[i].id > watcher.id) {
+        i--;
+      }
+      queue.splice(Math.max(i, index) + 1, 0, watcher);
+    }
+    // queue the flush
+    if (!waiting) {
+      waiting = true;
+      __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__nextTick__["a" /* nextTick */])(flushSchedulerQueue);
+    }
+  }
+}
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function (value) {
+    return Array.isArray(value) || Object.prototype.toString.call(value) === '[object Object]' && Object.isExtensible(value);
+});
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["watch"] = watch;
+/* harmony export (immutable) */ __webpack_exports__["unwatch"] = unwatch;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__watcher__ = __webpack_require__(1);
+
+
+function watch(target, config) {
+    return new __WEBPACK_IMPORTED_MODULE_0__watcher__["a" /* default */](target, config)['value'];
+}
+
+function unwatch(data) {
+    data['__watcher__'] ? data['__watcher__'].cancel() : null;
+    return data;
+}
 
 /***/ })
 /******/ ]);
+});
